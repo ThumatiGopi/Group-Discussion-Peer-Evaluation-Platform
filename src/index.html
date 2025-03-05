@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Group Discussion Evaluation System</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #reportContent,
+    #peerReportContent {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Group Discussion Evaluation System</h1>
+  </header>
+  <nav>
+    <button id="instructorBtn">Instructor Dashboard</button>
+    <button id="studentBtn">Peer Evaluation</button>
+  </nav>
+  <section id="instructorSection" class="hidden">
+    <h2>Instructor Dashboard</h2>
+    <div class="group-management">
+      <h3>Manage Groups</h3>
+      <form id="groupForm">
+        <label for="groupName">Group Name:</label>
+        <input type="text" id="groupName" name="groupName" required />
+        <label for="students">Students (comma separated):</label>
+        <input type="text" id="students" name="students" required />
+        <button type="submit">Create Group</button>
+      </form>
+      <div id="groupsList">
+        <!-- Dynamic group list with delete buttons -->
+      </div>
+    </div>
+    <div class="evaluation">
+      <h3>Instructor Evaluation</h3>
+      <form id="instructorEvalForm">
+        <label for="participantName">Participant Roll (Last 5 digits):</label>
+        <input type="text" id="participantName" name="participantName" required />
+
+        <h3>Evaluation Criteria (0-10 each)</h3>
+        <label for="instr_articulation">Articulation:</label>
+        <input type="number" id="instr_articulation" name="instr_articulation" min="0" max="10" required />
+        <label for="instr_relevance">Relevance:</label>
+        <input type="number" id="instr_relevance" name="instr_relevance" min="0" max="10" required />
+        <label for="instr_leadership">Leadership:</label>
+        <input type="number" id="instr_leadership" name="instr_leadership" min="0" max="10" required />
+        <label for="instr_nonverbal">Non-verbal Communication:</label>
+        <input type="number" id="instr_nonverbal" name="instr_nonverbal" min="0" max="10" required />
+        <label for="instr_impression">Impression:</label>
+        <input type="number" id="instr_impression" name="instr_impression" min="0" max="10" required />
+        <input type="hidden" id="evaluation" name="evaluation" />
+        <button type="submit">Submit Evaluation</button>
+      </form>
+    </div>
+    <br />
+    <button id="generateReportBtn">Final Report</button>
+    <button id="generatePeerReportBtn">Peer Evaluation Report</button>
+  </section>
+
+  <section id="studentSection" class="hidden">
+    <h2>Peer Evaluation</h2>
+    <div id="studentGroupsList">
+      <!-- Dynamic group list without delete buttons -->
+    </div>
+    <form id="peerEvalForm">
+      <label for="participant">Participant Roll (Last 5 digits):</label>
+      <input type="text" id="participant" name="participant" required />
+
+      <label for="peer">Peer Roll (Last 5 digits):</label>
+      <input type="text" id="peer" name="peer" required />
+
+      <div class="criteria">
+        <h3>Evaluation Criteria (0-10 each)</h3>
+        <label for="articulation">Articulation:</label>
+        <input type="number" id="articulation" name="articulation" min="0" max="10" required />
+        <label for="relevance">Relevance:</label>
+        <input type="number" id="relevance" name="relevance" min="0" max="10" required />
+        <label for="leadership">Leadership:</label>
+        <input type="number" id="leadership" name="leadership" min="0" max="10" required />
+        <label for="nonverbal">Non-verbal Communication:</label>
+        <input type="number" id="nonverbal" name="nonverbal" min="0" max="10" required />
+        <label for="impression">Impression:</label>
+        <input type="number" id="impression" name="impression" min="0" max="10" required />
+      </div>
+      <button type="submit">Submit Peer Evaluation</button>
+    </form>
+  </section>
+
+  <section id="peerReportSection" class="hidden">
+    <h2>Peer Evaluation Report</h2>
+    <br />
+    <button id="peerBackBtn">Back to Dashboard</button>
+    <div id="peerReportContent">
+      <!-- Peer Evaluation Report details with delete buttons will be generated -->
+    </div>
+    <br />
+    <button id="peerBackBtn">Back to Dashboard</button>
+  </section>
+
+  <section id="reportSection" class="hidden">
+    <h2>Final Report</h2>
+    <br />
+    <button id="backBtn">Back to Dashboard</button>
+    <div id="reportContent">
+      <!-- Final Report details with delete buttons will be generated -->
+    </div>
+    <br />
+    <button id="backBtn">Back to Dashboard</button>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
