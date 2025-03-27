@@ -39,7 +39,7 @@ You can expose your local server to the internet using ngrok:
 2. **Create a Tunnel**:  
    - In a new terminal, run the command:  
      ```bash
-     ngrok http 3000
+     ngrok http --url=equally-grand-mule.ngrok-free.app 3000
      ```  
    - Replace `3000` with your server's port if different.
 

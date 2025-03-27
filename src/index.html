@@ -42,22 +42,10 @@
     <div class="evaluation">
       <h3>Instructor Evaluation</h3>
       <form id="instructorEvalForm">
-        <label for="participantName">Participant Roll (Last 5 digits):</label>
-        <input type="text" id="participantName" name="participantName" required />
-
-        <h3>Evaluation Criteria (0-10 each)</h3>
-        <label for="instr_articulation">Articulation:</label>
-        <input type="number" id="instr_articulation" name="instr_articulation" min="0" max="10" required />
-        <label for="instr_relevance">Relevance:</label>
-        <input type="number" id="instr_relevance" name="instr_relevance" min="0" max="10" required />
-        <label for="instr_leadership">Leadership:</label>
-        <input type="number" id="instr_leadership" name="instr_leadership" min="0" max="10" required />
-        <label for="instr_nonverbal">Non-verbal Communication:</label>
-        <input type="number" id="instr_nonverbal" name="instr_nonverbal" min="0" max="10" required />
-        <label for="instr_impression">Impression:</label>
-        <input type="number" id="instr_impression" name="instr_impression" min="0" max="10" required />
-        <input type="hidden" id="evaluation" name="evaluation" />
-        <button type="submit">Submit Evaluation</button>
+        <div id="instructorEvaluationSections">
+          <!-- Evaluation sections will be dynamically generated here -->
+        </div>
+        <button type="submit">Submit All Evaluations</button>
       </form>
     </div>
     <br />
@@ -71,33 +59,27 @@
       <!-- Dynamic group list without delete buttons -->
     </div>
     <form id="peerEvalForm">
-      <label for="participant">Participant Roll (Last 5 digits):</label>
-      <input type="text" id="participant" name="participant" required />
-
-      <label for="peer">Peer Roll (Last 5 digits):</label>
+      <label for="peer">Your Roll Number (Last 5 digits):</label>
       <input type="text" id="peer" name="peer" required />
-
-      <div class="criteria">
-        <h3>Evaluation Criteria (0-10 each)</h3>
-        <label for="articulation">Articulation:</label>
-        <input type="number" id="articulation" name="articulation" min="0" max="10" required />
-        <label for="relevance">Relevance:</label>
-        <input type="number" id="relevance" name="relevance" min="0" max="10" required />
-        <label for="leadership">Leadership:</label>
-        <input type="number" id="leadership" name="leadership" min="0" max="10" required />
-        <label for="nonverbal">Non-verbal Communication:</label>
-        <input type="number" id="nonverbal" name="nonverbal" min="0" max="10" required />
-        <label for="impression">Impression:</label>
-        <input type="number" id="impression" name="impression" min="0" max="10" required />
+      
+      <div id="evaluationSections">
+        <!-- Evaluation sections will be dynamically generated here -->
       </div>
-      <button type="submit">Submit Peer Evaluation</button>
+      
+      <button type="submit">Submit All Evaluations</button>
     </form>
   </section>
 
   <section id="peerReportSection" class="hidden">
     <h2>Peer Evaluation Report</h2>
     <br />
-    <button id="peerBackBtn">Back to Dashboard</button>
+    <div class="report-filter">
+      <label for="evaluatorSelect">Select Evaluator:</label>
+      <select id="evaluatorSelect">
+        <option value="all">All Evaluators</option>
+      </select>
+      <button id="filterPeerReport">Generate Report</button>
+    </div>
     <div id="peerReportContent">
       <!-- Peer Evaluation Report details with delete buttons will be generated -->
     </div>
@@ -107,8 +89,8 @@
 
   <section id="reportSection" class="hidden">
     <h2>Final Report</h2>
+    <button id="downloadReportBtn">Download Report</button>
     <br />
-    <button id="backBtn">Back to Dashboard</button>
     <div id="reportContent">
       <!-- Final Report details with delete buttons will be generated -->
     </div>

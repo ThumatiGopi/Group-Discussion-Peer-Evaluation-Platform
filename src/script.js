@@ -56,6 +56,49 @@ function renderGroups() {
       "<button onclick='deleteGroup(" + index + ")'>Delete</button>";
     list.appendChild(div);
   });
+  
+  // After rendering groups, generate instructor evaluation sections
+  generateInstructorEvaluationSections();
+}
+
+function generateInstructorEvaluationSections() {
+  const container = document.getElementById("instructorEvaluationSections");
+  container.innerHTML = "";
+  
+  // Get all students from all groups
+  const allStudents = groups.flatMap(group => group.students);
+  
+  // Take first 8 students (or all if less than 8)
+  const studentsToEvaluate = allStudents.slice(0, 8);
+  
+  studentsToEvaluate.forEach((student, index) => {
+    const section = document.createElement("div");
+    section.className = "evaluation-section";
+    section.innerHTML = `
+      <h3>Participant ${index + 1}</h3>
+      <input type="hidden" id="participantName${index}" name="participantName${index}" value="${student}" />
+      <p>Evaluating: ${student}</p>
+      
+      <div class="criteria">
+        <h4>Evaluation Criteria (0-10 each)</h4>
+        <label for="instr_articulation${index}">Articulation:</label>
+        <input type="number" id="instr_articulation${index}" name="instr_articulation${index}" min="0" max="10" required />
+        
+        <label for="instr_relevance${index}">Relevance:</label>
+        <input type="number" id="instr_relevance${index}" name="instr_relevance${index}" min="0" max="10" required />
+        
+        <label for="instr_leadership${index}">Leadership:</label>
+        <input type="number" id="instr_leadership${index}" name="instr_leadership${index}" min="0" max="10" required />
+        
+        <label for="instr_nonverbal${index}">Non-verbal Comm:</label>
+        <input type="number" id="instr_nonverbal${index}" name="instr_nonverbal${index}" min="0" max="10" required />
+        
+        <label for="instr_impression${index}">Impression:</label>
+        <input type="number" id="instr_impression${index}" name="instr_impression${index}" min="0" max="10" required />
+      </div>
+    `;
+    container.appendChild(section);
+  });
 }
 
 function renderGroupsForStudent() {
@@ -67,6 +110,49 @@ function renderGroupsForStudent() {
     div.innerHTML = "<h4>" + group.groupName + "</h4>" +
       "<p>" + group.students.join(", ") + "</p>";
     list.appendChild(div);
+  });
+
+  // After rendering groups, generate evaluation sections
+  generateEvaluationSections();
+}
+
+function generateEvaluationSections() {
+  const container = document.getElementById("evaluationSections");
+  container.innerHTML = "";
+  
+  // Get all students from all groups
+  const allStudents = groups.flatMap(group => group.students);
+  
+  // Take first 8 students (or all if less than 8)
+  const studentsToEvaluate = allStudents.slice(0, 8);
+  
+  studentsToEvaluate.forEach((student, index) => {
+    const section = document.createElement("div");
+    section.className = "evaluation-section";
+    section.innerHTML = `
+      <h3>Participant ${index + 1}</h3>
+      <input type="hidden" id="participant${index}" name="participant${index}" value="${student}" />
+      <p>Evaluating: ${student}</p>
+      
+      <div class="criteria">
+        <h4>Evaluation Criteria (0-10 each)</h4>
+        <label for="articulation${index}">Articulation:</label>
+        <input type="number" id="articulation${index}" name="articulation${index}" min="0" max="10" required />
+        
+        <label for="relevance${index}">Relevance:</label>
+        <input type="number" id="relevance${index}" name="relevance${index}" min="0" max="10" required />
+        
+        <label for="leadership${index}">Leadership:</label>
+        <input type="number" id="leadership${index}" name="leadership${index}" min="0" max="10" required />
+        
+        <label for="nonverbal${index}">Non-verbal Comm:</label>
+        <input type="number" id="nonverbal${index}" name="nonverbal${index}" min="0" max="10" required />
+        
+        <label for="impression${index}">Impression:</label>
+        <input type="number" id="impression${index}" name="impression${index}" min="0" max="10" required />
+      </div>
+    `;
+    container.appendChild(section);
   });
 }
 
@@ -80,63 +166,94 @@ function deleteGroup(index) {
 let instructorEvaluations = {};
 document.getElementById("instructorEvalForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  const participant = document.getElementById("participantName").value;
-  const criteriaIds = ["instr_articulation", "instr_relevance", "instr_leadership", "instr_nonverbal", "instr_impression"];
-  let sum = 0;
-  criteriaIds.forEach(id => {
-    sum += parseFloat(document.getElementById(id).value);
+  
+  // Get all students from all groups
+  const allStudents = groups.flatMap(group => group.students);
+  const studentsToEvaluate = allStudents.slice(0, 8);
+  
+  studentsToEvaluate.forEach((participant, index) => {
+    const criteriaIds = [
+      `instr_articulation${index}`,
+      `instr_relevance${index}`,
+      `instr_leadership${index}`,
+      `instr_nonverbal${index}`,
+      `instr_impression${index}`
+    ];
+    
+    let sum = 0;
+    criteriaIds.forEach(id => {
+      sum += parseFloat(document.getElementById(id).value);
+    });
+    const average = sum / criteriaIds.length;
+    instructorEvaluations[participant] = average;
   });
-  const average = sum / criteriaIds.length;
-  instructorEvaluations[participant] = average;
-  alert("Instructor evaluation submitted for " + participant + ". Average: " + average.toFixed(2));
+
+  alert("Instructor evaluations submitted successfully for all participants");
   saveReport();
   e.target.reset();
+  
+  // Regenerate evaluation sections with empty values
+  generateInstructorEvaluationSections();
 });
 
 // Peer evaluation logic
 let peerEvalRecords = [];
 document.getElementById("peerEvalForm").addEventListener("submit", function (e) {
   e.preventDefault();
-  const participant = document.getElementById("participant").value;
   const peer = document.getElementById("peer").value;
-  const articulation = parseFloat(document.getElementById("articulation").value) || 0;
-  const relevance = parseFloat(document.getElementById("relevance").value) || 0;
-  const leadership = parseFloat(document.getElementById("leadership").value) || 0;
-  const nonverbal = parseFloat(document.getElementById("nonverbal").value) || 0;
-  const impression = parseFloat(document.getElementById("impression").value) || 0;
-  const averageScore = (articulation + relevance + leadership + nonverbal + impression) / 5;
   const timestamp = new Date().toLocaleString();
+  
+  // Get all students from all groups
+  const allStudents = groups.flatMap(group => group.students);
+  const studentsToEvaluate = allStudents.slice(0, 8);
+  
+  studentsToEvaluate.forEach((participant, index) => {
+    const articulation = parseFloat(document.getElementById(`articulation${index}`).value) || 0;
+    const relevance = parseFloat(document.getElementById(`relevance${index}`).value) || 0;
+    const leadership = parseFloat(document.getElementById(`leadership${index}`).value) || 0;
+    const nonverbal = parseFloat(document.getElementById(`nonverbal${index}`).value) || 0;
+    const impression = parseFloat(document.getElementById(`impression${index}`).value) || 0;
+    const averageScore = (articulation + relevance + leadership + nonverbal + impression) / 5;
 
-  peerEvalRecords.push({
-    participant,
-    peer,
-    articulation,
-    relevance,
-    leadership,
-    nonverbal,
-    impression,
-    average: averageScore,
-    timestamp: timestamp
+    peerEvalRecords.push({
+      participant,
+      peer,
+      articulation,
+      relevance,
+      leadership,
+      nonverbal,
+      impression,
+      average: averageScore,
+      timestamp: timestamp
+    });
   });
 
-  alert("Peer evaluation submitted for " + participant + " by peer " + peer + ". Average: " + averageScore.toFixed(2));
+  alert("Peer evaluations submitted successfully for all participants");
   saveReport();
   e.target.reset();
+  
+  // Regenerate evaluation sections with empty values
+  generateEvaluationSections();
 });
 
 document.getElementById("generatePeerReportBtn").addEventListener("click", function () {
   generatePeerReport();
 });
 
-function generatePeerReport() {
+function generatePeerReport(filterEvaluator = "all") {
+  let filteredRecords = peerEvalRecords;
+  if (filterEvaluator !== "all") {
+    filteredRecords = peerEvalRecords.filter(record => record.peer === filterEvaluator);
+  }
+  updateEvaluatorDropdown();
   let reportHtml = "";
-  peerEvalRecords.forEach((record, index) => {
+  filteredRecords.forEach((record, index) => {
     reportHtml += "<div class='peer-report-entry'><h4>Participant: " + record.participant +
       " (Evaluated by: " + record.peer + ")</h4>";
     reportHtml += "<p>Articulation: " + record.articulation + "</p>";
     reportHtml += "<p>Relevance: " + record.relevance + "</p>";
     reportHtml += "<p>Leadership: " + record.leadership + "</p>";
-    reportHtml += "<p>Non-verbal Communication: " + record.nonverbal + "</p>";
+    reportHtml += "<p>Non-verbal Comm: " + record.nonverbal + "</p>";
     reportHtml += "<p>Impression: " + record.impression + "</p>";
     reportHtml += "<p>Average Score: " + record.average.toFixed(2) + "</p>";
     reportHtml += "<p>Submitted on: " + record.timestamp + "</p>";
@@ -147,6 +264,22 @@ function generatePeerReport() {
   document.getElementById("peerReportSection").classList.remove("hidden");
   document.getElementById("instructorSection").classList.add("hidden");
 }
+function updateEvaluatorDropdown() {
+  const evaluatorSelect = document.getElementById("evaluatorSelect");
+  const evaluators = new Set(peerEvalRecords.map(record => record.peer));
+  evaluatorSelect.innerHTML = '<option value="">Select Evaluator</option>';
+  evaluators.forEach(evaluator => {
+    const option = document.createElement("option");
+    option.value = evaluator;
+    option.textContent = evaluator;
+    evaluatorSelect.appendChild(option);
+  });
+}
+
+document.getElementById("filterPeerReport").addEventListener("click", function(){
+   const selected = document.getElementById("evaluatorSelect").value;
+   generatePeerReport(selected);
+});
 
 function deletePeerRecord(index) {
   peerEvalRecords.splice(index, 1);
@@ -158,6 +291,37 @@ function deletePeerRecord(index) {
 document.getElementById("generateReportBtn").addEventListener("click", function () {
   generateReport();
 });
+
+document.getElementById("downloadReportBtn").addEventListener("click", function() {
+  downloadFinalReport();
+});
+
+function downloadFinalReport() {
+  // Create CSV header
+  let csv = "Participant,Peer Average,Instructor Score,Final Score\n";
+  
+  // Add data rows
+  const participants = new Set(Object.keys(instructorEvaluations));
+  participants.forEach(participant => {
+    const peerScores = peerEvalRecords.filter(r => r.participant === participant).map(r => r.average);
+    const peerAverage = peerScores.length ? peerScores.reduce((a, b) => a + b, 0) / peerScores.length : 0;
+    const instructorScore = instructorEvaluations[participant] || 0;
+    const finalScore = (peerAverage + instructorScore) / 2;
+    
+    csv += `${participant},${peerAverage.toFixed(2)},${instructorScore.toFixed(2)},${finalScore.toFixed(2)}\n`;
+  });
+  
+  // Create blob and trigger download
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.setAttribute('href', url);
+  a.setAttribute('download', 'final_report.csv');
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
 
 function generateReport() {
   let reportHtml = "";
